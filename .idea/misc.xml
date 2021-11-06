@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/drawable-anydpi/ic_apply.xml" value="0.3828125" />
+        <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/drawable-anydpi/ic_baack.xml" value="0.3828125" />
+        <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/drawable-anydpi/ic_back.xml" value="0.3828125" />
+        <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/drawable-anydpi/ic_settings.xml" value="0.3828125" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/drawable/rounded_square.xml" value="0.3828125" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/layout/actionbar_setting_icon.xml" value="0.36666666666666664" />
@@ -12,6 +16,7 @@
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/layout/settings_fragment.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/menu/menu_actionbar.xml" value="0.36666666666666664" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/menu/menu_toolbar.xml" value="0.36666666666666664" />
+        <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/menu/menu_toolbar_settings.xml" value="0.15873015873015872" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/xml/root_preferences.xml" value="0.33" />
         <entry key="..\:/AndroidProjects/ExchangeRates/app/src/main/res/xml/settings_preferences.xml" value="0.36666666666666664" />
       </map>

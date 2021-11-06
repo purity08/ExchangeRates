@@ -1,13 +1,12 @@
 package com.exchangerates
 
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 
 class MainFragment: Fragment(R.layout.main_fragment) {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -15,20 +14,18 @@ class MainFragment: Fragment(R.layout.main_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setActionBarTitle()
+    }
+
+    private fun setActionBarTitle() {
+        val activity: MainActivity = activity as MainActivity
+        activity.setActionBarTitle("Курсы валют")
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.action_settings -> {
-                fragmentManager
-                    ?.beginTransaction()
-                    ?.addToBackStack(null)
-                    ?.replace(R.id.container, SettingsFragment())
-                    ?.commit()
-                true
-            }
-            android.R.id.home -> {
-                fragmentManager?.popBackStack()
+                findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -6,29 +6,32 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import timber.log.Timber
 
+
 class SettingsFragment: Fragment(R.layout.settings_fragment) {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        return when (item.itemId) {
             R.id.action_settings -> {
-                Timber.d("apply_clicked")
+                //Apply changes
+                true
             }
+            else -> super.onOptionsItemSelected(item)
         }
-        return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_toolbar, menu)
+        inflater.inflate(R.menu.menu_toolbar_settings, menu)
     }
-
 }
