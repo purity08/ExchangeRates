@@ -10,7 +10,7 @@ import com.exchangerates.MainActivity
 import com.exchangerates.R
 
 
-class SettingsFragment: Fragment(R.layout.settings_fragment) {
+class SettingsFragment: Fragment(R.layout.fragment_settings) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class SettingsFragment: Fragment(R.layout.settings_fragment) {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> {
+            R.id.action_apply -> {
                 //Apply changes
                 true
             }
