@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.exchangerates.MainFragment"
+        android:name="com.exchangerates.ui.MainFragment"
         android:label="main_fragment"
         tools:layout="@layout/main_fragment" >
         <action
@@ -17,6 +17,6 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.exchangerates.SettingsFragment"
+        android:name="com.exchangerates.ui.SettingsFragment"
         android:label="SettingsFragment" />
 </navigation>

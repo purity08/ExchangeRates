@@ -2,6 +2,7 @@ package com.exchangerates
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import timber.log.Timber
@@ -27,6 +28,9 @@ class MainActivity : AppCompatActivity() {
                 if (navHostFragment.childFragmentManager.backStackEntryCount > 0) {
                     navController.popBackStack()
                 }
+            }
+            R.id.action_settings -> {
+                //TODO
             }
         }
         return super.onOptionsItemSelected(item)
