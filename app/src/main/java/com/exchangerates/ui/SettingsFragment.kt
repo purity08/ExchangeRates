@@ -11,15 +11,16 @@ import com.exchangerates.R
 import timber.log.Timber
 
 
-class SettingsFragment: Fragment(R.layout.fragment_settings) {
+class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
     private lateinit var mainActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        mainActivity =  activity as MainActivity
+        mainActivity = activity as MainActivity
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActionBarTitle()
@@ -36,6 +37,7 @@ class SettingsFragment: Fragment(R.layout.fragment_settings) {
         mainActivity.menuSettingsItem.isVisible = false
         mainActivity.menuApplyItem.isVisible = true
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_apply -> {

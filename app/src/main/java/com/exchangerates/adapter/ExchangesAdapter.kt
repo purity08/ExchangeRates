@@ -1,5 +1,6 @@
 package com.exchangerates.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,12 +26,14 @@ class ExchangesAdapter(
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val exchange = todayExchangesList[position]
         holder.exchangeName.text = todayExchangesList[position].Cur_Abbreviation
-        holder.exchangeDescription.text = todayExchangesList[position].Cur_Name
+        holder.exchangeDescription.text = "${todayExchangesList[position].Cur_Scale} ${todayExchangesList[position].Cur_Name}"
         holder.exchangeFirstRates.text = todayExchangesList[position].Cur_OfficialRate
-        //holder.exchangeName.text = tomorrowExchangesList[position].Cur_OfficialRate
+        if (tomorrowExchangesList.isNotEmpty()) {
+            holder.exchangeSecondRates.text = tomorrowExchangesList[position].Cur_OfficialRate
+        }
     }
 
     override fun getItemCount() = todayExchangesList.size

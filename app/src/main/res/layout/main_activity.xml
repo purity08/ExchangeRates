@@ -13,19 +13,20 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/first_date_textView"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:textSize="15sp"
-            android:text="12.11.17" />
+            android:layout_marginEnd="20dp"
+            android:textAlignment="center"
+            android:visibility="invisible"
+            />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/second_date_textView"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:textSize="15sp"
-            android:text="13.11.17" />
+            android:layout_marginEnd="10dp"
+            android:textAlignment="center"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView

@@ -1,19 +1,25 @@
 package com.exchangerates
 
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.exchangerates.databinding.MainActivityBinding
 import com.exchangerates.model.Exchange
 import com.exchangerates.service.AppServices
 import com.exchangerates.viewmodel.MainViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     var isSuccessfulLoadingList: Boolean = false
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (BuildConfig.DEBUG) {
@@ -36,15 +43,30 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        loadExchangeList("2020-11-7")
+        val sdf = SimpleDateFormat("yyyy-M-dd", Locale.ROOT)
+        val currentDate = sdf.format(Date())
+        loadExchangeList(currentDate)
+
+        val sdfForDateText = SimpleDateFormat("dd.M.yy", Locale.ROOT)
+        val currentDateForText = sdfForDateText.format(Date())
+        binding.firstDateTextView.text = currentDateForText
+
+        val tomorrowDate = LocalDate.now().plusDays(1)
+        val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+        loadExchangeList(formattedTomorrowDate)
+
+        val formattedTomorrowDateForText =
+            tomorrowDate.format(DateTimeFormatter.ofPattern("dd.M.yy"))
+        binding.secondDateTextView.text = formattedTomorrowDateForText
+
     }
 
     private fun loadExchangeList(date: String) {
-
         AppServices
             .exchangesService
             .getAllExchanges(date)
-            .enqueue(object: Callback<List<Exchange>> {
+            .enqueue(object : Callback<List<Exchange>> {
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(
                     call: Call<List<Exchange>>,
                     response: Response<List<Exchange>>
@@ -53,26 +75,45 @@ class MainActivity : AppCompatActivity() {
                     Timber.d("GET_URL: ${call.request().url}")
                     if (response.code() == 200) {
                         if (bodyData != null) {
-                            binding.navHostFragment.visibility = View.VISIBLE
-                            binding.errorMessageTextView.visibility = View.GONE
-                            binding.firstDateTextView.visibility = View.VISIBLE
-                            binding.secondDateTextView.visibility = View.VISIBLE
-                            isSuccessfulLoadingList = true
-                            menuSettingsItem.isVisible = true
+                            val sdf = SimpleDateFormat("yyyy-M-dd", Locale.ROOT)
+                            val currentDate = sdf.format(Date())
 
-                            mainViewModel.exchangeList.value = bodyData
+                            val tomorrowDate = LocalDate.now().plusDays(1)
+                            val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+                            if (date == currentDate) {
+                                binding.navHostFragment.visibility = View.VISIBLE
+                                binding.errorMessageTextView.visibility = View.GONE
+                                binding.firstDateTextView.visibility = View.VISIBLE
+
+                                isSuccessfulLoadingList = true
+                                menuSettingsItem.isVisible = true
+
+                                mainViewModel.todayExchangesList.value = bodyData
+                            } else if (date == formattedTomorrowDate){
+                                if (bodyData.isNotEmpty()) {
+                                    binding.secondDateTextView.visibility = View.VISIBLE
+                                    mainViewModel.tomorrowExchangesList.value = bodyData
+                                } else {
+                                    //load yesterday
+                                    binding.secondDateTextView.visibility = View.INVISIBLE
+                                    mainViewModel.tomorrowExchangesList.value = listOf()
+                                }
+                            }
                         }
                     }
                 }
+
                 override fun onFailure(call: Call<List<Exchange>>, t: Throwable) {
                     binding.navHostFragment.visibility = View.GONE
                     binding.errorMessageTextView.visibility = View.VISIBLE
-                    binding.firstDateTextView.visibility = View.GONE
-                    binding.secondDateTextView.visibility = View.GONE
+                    binding.firstDateTextView.visibility = View.INVISIBLE
+                    binding.secondDateTextView.visibility = View.INVISIBLE
                     isSuccessfulLoadingList = false
                     Timber.d("GET_URL: ${call.request().url}")
                 }
+
             })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -86,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
             }

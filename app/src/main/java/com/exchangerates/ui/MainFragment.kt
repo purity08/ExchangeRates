@@ -24,7 +24,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private lateinit var exchangesRecyclerViewAdapter: ExchangesAdapter
     private var todayExchangesList = arrayListOf<Exchange>()
-    private val tomorrowExchangesList = arrayListOf<Exchange>()
+    private var tomorrowExchangesList = arrayListOf<Exchange>()
 
     private val viewModel: MainViewModel by activityViewModels()
 
@@ -51,8 +51,15 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         initializeExchangesRecyclerView()
 
-        viewModel.exchangeList.observe(viewLifecycleOwner, {
+        viewModel.todayExchangesList.observe(viewLifecycleOwner, {
             todayExchangesList = ArrayList(it)
+            exchangesRecyclerViewAdapter.setExchangesLists(
+                todayExchangesList,
+                tomorrowExchangesList
+            )
+        })
+        viewModel.tomorrowExchangesList.observe(viewLifecycleOwner, {
+            tomorrowExchangesList = ArrayList(it)
             exchangesRecyclerViewAdapter.setExchangesLists(
                 todayExchangesList,
                 tomorrowExchangesList
