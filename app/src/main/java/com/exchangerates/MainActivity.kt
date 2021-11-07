@@ -62,7 +62,8 @@ class MainActivity : AppCompatActivity() {
         val currentDateForText = sdfForDateText.format(Date())
         binding.firstDateTextView.text = currentDateForText
 
-        val tomorrowDate = LocalDate.now().plusDays(1)
+        //val tomorrowDate = LocalDate.now().plusDays(1)
+        val tomorrowDate = LocalDate.now().minusDays(1)
         val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
         loadExchangeList(formattedTomorrowDate)
 
@@ -86,7 +87,8 @@ class MainActivity : AppCompatActivity() {
                             val sdf = SimpleDateFormat("yyyy-M-dd", Locale.ROOT)
                             val currentDate = sdf.format(Date())
 
-                            val tomorrowDate = LocalDate.now().plusDays(1)
+                            //val tomorrowDate = LocalDate.now().plusDays(1)
+                            val tomorrowDate = LocalDate.now().minusDays(1)
                             val formattedTomorrowDate =
                                 tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
                             if (date == currentDate) {
@@ -110,7 +112,18 @@ class MainActivity : AppCompatActivity() {
                                     binding.secondDateTextView.visibility = View.VISIBLE
 
                                     val dateText = date.split("-")
-                                    binding.secondDateTextView.text = "${dateText[2]}.${dateText[1]}.${dateText[0]}"
+                                    val yearText = "${dateText[2]}.${dateText[1]}.${dateText[0].substring(2)}"
+
+                                    //binding.secondDateTextView.text = "${dateText[2]}.${dateText[1]}.${yearText}021"
+                                    binding.secondDateTextView.text = yearText
+
+                                    for(item in bodyData) {
+                                        when(item.Cur_Abbreviation) {
+                                            "EUR" -> item.isShowing = true
+                                            "USD" -> item.isShowing = true
+                                            "RUB" -> item.isShowing = true
+                                        }
+                                    }
 
                                     mainViewModel.tomorrowExchangesList.value = bodyData
                                     for (item in mainViewModel.tomorrowExchangesList.value!!) {
