@@ -68,21 +68,20 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             )
         })
 
-         viewModel.tomorrowExchangesList.observe(viewLifecycleOwner, {
-             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                 tomorrowExchangesList = ArrayList(
-                     it.parallelStream()
-                         .filter { item ->
-                             item.isShowing
-                         }.toList()
-                 )
-             }
-                   exchangesRecyclerViewAdapter.setExchangesLists(
-                       todayExchangesList,
-                       tomorrowExchangesList
-                   )
-               })
-
+        viewModel.tomorrowExchangesList.observe(viewLifecycleOwner, {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                tomorrowExchangesList = ArrayList(
+                    it.parallelStream()
+                        .filter { item ->
+                            item.isShowing
+                        }.toList()
+                )
+            }
+            exchangesRecyclerViewAdapter.setExchangesLists(
+                todayExchangesList,
+                tomorrowExchangesList
+            )
+        })
 
 
     }

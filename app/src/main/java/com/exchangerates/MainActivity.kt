@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var menuSettingsItem: MenuItem
     lateinit var menuApplyItem: MenuItem
 
-    var isYesterdayNeeded: Boolean = false
     var isSuccessfulLoadingList: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -59,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         binding.firstDateTextView.text = currentDateForText
 
         val tomorrowDate = LocalDate.now().plusDays(1)
-        //val tomorrowDate = LocalDate.now().minusDays(1)
         val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
         loadExchangeList(formattedTomorrowDate)
 
@@ -83,7 +81,6 @@ class MainActivity : AppCompatActivity() {
                             val sdf = SimpleDateFormat("yyyy-M-dd", Locale.ROOT)
                             val currentDate = sdf.format(Date())
 
-                            //val tomorrowDate = LocalDate.now().minusDays(1)
                             val formattedTomorrowDate = LocalDate.now().plusDays(1)
                                 .format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
 
@@ -98,8 +95,8 @@ class MainActivity : AppCompatActivity() {
                                 isSuccessfulLoadingList = true
                                 menuSettingsItem.isVisible = true
 
-                                for(item in bodyData) {
-                                    when(item.Cur_Abbreviation) {
+                                for (item in bodyData) {
+                                    when (item.Cur_Abbreviation) {
                                         "EUR" -> item.isShowing = true
                                         "USD" -> item.isShowing = true
                                         "RUB" -> item.isShowing = true
@@ -111,12 +108,13 @@ class MainActivity : AppCompatActivity() {
                                     binding.secondDateTextView.visibility = View.VISIBLE
 
                                     val dateText = date.split("-")
-                                    val yearText = "${dateText[2]}.${dateText[1]}.${dateText[0].substring(2)}"
+                                    val yearText =
+                                        "${dateText[2]}.${dateText[1]}.${dateText[0].substring(2)}"
 
                                     binding.secondDateTextView.text = yearText
 
-                                    for(item in bodyData) {
-                                        when(item.Cur_Abbreviation) {
+                                    for (item in bodyData) {
+                                        when (item.Cur_Abbreviation) {
                                             "EUR" -> item.isShowing = true
                                             "USD" -> item.isShowing = true
                                             "RUB" -> item.isShowing = true
@@ -133,11 +131,8 @@ class MainActivity : AppCompatActivity() {
                                         }
                                     }
                                 } else {
-                                    //load yesterday
-
+                                    //Load yesterday
                                     loadExchangeList(formattedYesterdayDate)
-                                    //binding.secondDateTextView.visibility = View.INVISIBLE
-                                    //mainViewModel.tomorrowExchangesList.value = listOf()
                                 }
                             } else if (date == formattedYesterdayDate) {
                                 AppServices
@@ -152,22 +147,26 @@ class MainActivity : AppCompatActivity() {
                                             Timber.d("GET_URL: ${call.request().url}")
                                             if (response.code() == 200) {
                                                 if (body != null) {
-                                                    binding.secondDateTextView.visibility = View.VISIBLE
+                                                    binding.secondDateTextView.visibility =
+                                                        View.VISIBLE
 
                                                     val dateText = date.split("-")
-                                                    val yearText = "${dateText[2]}.${dateText[1]}.${dateText[0].substring(2)}"
+                                                    val yearText = "${dateText[2]}.${dateText[1]}.${
+                                                        dateText[0].substring(2)
+                                                    }"
 
                                                     binding.secondDateTextView.text = yearText
 
-                                                    for(item in bodyData) {
-                                                        when(item.Cur_Abbreviation) {
+                                                    for (item in bodyData) {
+                                                        when (item.Cur_Abbreviation) {
                                                             "EUR" -> item.isShowing = true
                                                             "USD" -> item.isShowing = true
                                                             "RUB" -> item.isShowing = true
                                                         }
                                                     }
 
-                                                    mainViewModel.tomorrowExchangesList.value = bodyData
+                                                    mainViewModel.tomorrowExchangesList.value =
+                                                        bodyData
                                                     for (item in mainViewModel.tomorrowExchangesList.value!!) {
                                                         if (item.Cur_Abbreviation == "USD"
                                                             || item.Cur_Abbreviation == "EUR"
@@ -202,7 +201,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
