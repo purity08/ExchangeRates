@@ -6,5 +6,15 @@
         android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"
         app:showAsAction="always"
-        android:title="settings" />
+        android:title="settings"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/action_apply"
+        android:icon="@drawable/ic_apply"
+        app:showAsAction="always"
+        android:title="apply"
+        android:visible="false"
+        />
+
 </menu>
