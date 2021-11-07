@@ -12,8 +12,8 @@ import com.exchangerates.model.Exchange
 class ExchangesAdapter(
     private var todayExchangesList: List<Exchange>,
     private var tomorrowExchangesList: List<Exchange>
-): RecyclerView.Adapter<ExchangesAdapter.ViewHolder>() {
-    inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+) : RecyclerView.Adapter<ExchangesAdapter.ViewHolder>() {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var exchangeName: TextView = view.findViewById(R.id.exchange_name_textView)
         var exchangeDescription: TextView = view.findViewById(R.id.exchange_description_textView)
         var exchangeFirstRates: TextView = view.findViewById(R.id.exchange_first_rates_textView)
@@ -29,7 +29,8 @@ class ExchangesAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.exchangeName.text = todayExchangesList[position].Cur_Abbreviation
-        holder.exchangeDescription.text = "${todayExchangesList[position].Cur_Scale} ${todayExchangesList[position].Cur_Name}"
+        holder.exchangeDescription.text =
+            "${todayExchangesList[position].Cur_Scale} ${todayExchangesList[position].Cur_Name}"
         holder.exchangeFirstRates.text = todayExchangesList[position].Cur_OfficialRate
         if (tomorrowExchangesList.isNotEmpty()) {
             holder.exchangeSecondRates.text = tomorrowExchangesList[position].Cur_OfficialRate
@@ -38,7 +39,10 @@ class ExchangesAdapter(
 
     override fun getItemCount() = todayExchangesList.size
 
-    fun setExchangesLists(newTodayExchangesList: List<Exchange>, newTomorrowExchangesList: List<Exchange>) {
+    fun setExchangesLists(
+        newTodayExchangesList: List<Exchange>,
+        newTomorrowExchangesList: List<Exchange>
+    ) {
         todayExchangesList = newTodayExchangesList
         tomorrowExchangesList = newTomorrowExchangesList
         notifyDataSetChanged()

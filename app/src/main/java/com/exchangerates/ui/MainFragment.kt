@@ -1,5 +1,6 @@
 package com.exchangerates.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -16,6 +17,7 @@ import com.exchangerates.databinding.FragmentMainBinding
 import com.exchangerates.model.Exchange
 import com.exchangerates.viewmodel.MainViewModel
 import timber.log.Timber
+import kotlin.streams.toList
 
 class MainFragment : Fragment(R.layout.fragment_main) {
 
@@ -52,19 +54,40 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         initializeExchangesRecyclerView()
 
         viewModel.todayExchangesList.observe(viewLifecycleOwner, {
-            todayExchangesList = ArrayList(it)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                todayExchangesList = ArrayList(
+                    it.parallelStream()
+                        .filter { item ->
+                            item.isShowing
+                        }.toList()
+                )
+            }
             exchangesRecyclerViewAdapter.setExchangesLists(
                 todayExchangesList,
                 tomorrowExchangesList
             )
         })
-        viewModel.tomorrowExchangesList.observe(viewLifecycleOwner, {
-            tomorrowExchangesList = ArrayList(it)
-            exchangesRecyclerViewAdapter.setExchangesLists(
-                todayExchangesList,
-                tomorrowExchangesList
-            )
-        })
+        /*
+       viewModel.visibleExchangesList.observe(viewLifecycleOwner, {
+
+           todayExchangesList = ArrayList()
+           exchangesRecyclerViewAdapter.setExchangesLists(
+               todayExchangesList,
+               tomorrowExchangesList
+           )
+
+       })
+
+         viewModel.tomorrowExchangesList.observe(viewLifecycleOwner, {
+                   tomorrowExchangesList = ArrayList(it)
+                   exchangesRecyclerViewAdapter.setExchangesLists(
+                       todayExchangesList,
+                       tomorrowExchangesList
+                   )
+               })
+
+                */
+
     }
 
     private fun initializeExchangesRecyclerView() {

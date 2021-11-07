@@ -1,5 +1,6 @@
 package com.exchangerates
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -8,6 +9,8 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.exchangerates.databinding.MainActivityBinding
 import com.exchangerates.model.Exchange
 import com.exchangerates.service.AppServices
@@ -20,11 +23,15 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.stream.Collectors
+import kotlin.collections.ArrayList
+import kotlin.streams.toList
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: MainActivityBinding
     private val mainViewModel: MainViewModel by viewModels()
+
+    lateinit var binding: MainActivityBinding
     lateinit var menuSettingsItem: MenuItem
     lateinit var menuApplyItem: MenuItem
 
@@ -59,9 +66,6 @@ class MainActivity : AppCompatActivity() {
         val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
         loadExchangeList(formattedTomorrowDate)
 
-        val formattedTomorrowDateForText =
-            tomorrowDate.format(DateTimeFormatter.ofPattern("dd.M.yy"))
-        binding.secondDateTextView.text = formattedTomorrowDateForText
     }
 
     private fun loadExchangeList(date: String) {
@@ -69,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             .exchangesService
             .getAllExchanges(date)
             .enqueue(object : Callback<List<Exchange>> {
+                @SuppressLint("SetTextI18n")
                 @RequiresApi(Build.VERSION_CODES.O)
                 override fun onResponse(
                     call: Call<List<Exchange>>,
@@ -92,19 +97,30 @@ class MainActivity : AppCompatActivity() {
                                 isSuccessfulLoadingList = true
                                 menuSettingsItem.isVisible = true
 
-                                mainViewModel.todayExchangesList.value = bodyData
-                                for (item in mainViewModel.todayExchangesList.value!!) {
-                                    if (item.Cur_Abbreviation == "USD"
-                                        || item.Cur_Abbreviation == "EUR"
-                                        || item.Cur_Abbreviation == "RUB"
-                                    ) {
-                                        item.isShowing = true
+                                for(item in bodyData) {
+                                    when(item.Cur_Abbreviation) {
+                                        "EUR" -> item.isShowing = true
+                                        "USD" -> item.isShowing = true
+                                        "RUB" -> item.isShowing = true
                                     }
                                 }
+                                mainViewModel.todayExchangesList.value = bodyData
                             } else if (date == formattedTomorrowDate) {
                                 if (bodyData.isNotEmpty()) {
                                     binding.secondDateTextView.visibility = View.VISIBLE
+
+                                    val dateText = date.split("-")
+                                    binding.secondDateTextView.text = "${dateText[2]}.${dateText[1]}.${dateText[0]}"
+
                                     mainViewModel.tomorrowExchangesList.value = bodyData
+                                    for (item in mainViewModel.tomorrowExchangesList.value!!) {
+                                        if (item.Cur_Abbreviation == "USD"
+                                            || item.Cur_Abbreviation == "EUR"
+                                            || item.Cur_Abbreviation == "RUB"
+                                        ) {
+                                            item.isShowing = true
+                                        }
+                                    }
                                 } else {
                                     //load yesterday
                                     binding.secondDateTextView.visibility = View.INVISIBLE
@@ -128,20 +144,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    override fun onResume() {
-        Timber.d("Main_onResume")
-        super.onResume()
-    }
-
-    override fun onStart() {
-        Timber.d("Main_onStart")
-        super.onStart()
-    }
-
-    override fun onRestart() {
-        Timber.d("Main_onRestart")
-        super.onRestart()
-    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
         menuSettingsItem = menu!!.findItem(R.id.action_settings)
