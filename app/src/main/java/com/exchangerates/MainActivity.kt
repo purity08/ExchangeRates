@@ -9,8 +9,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.exchangerates.databinding.MainActivityBinding
 import com.exchangerates.model.Exchange
 import com.exchangerates.service.AppServices
@@ -23,9 +21,6 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.stream.Collectors
-import kotlin.collections.ArrayList
-import kotlin.streams.toList
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var menuSettingsItem: MenuItem
     lateinit var menuApplyItem: MenuItem
 
+    var isYesterdayNeeded: Boolean = false
     var isSuccessfulLoadingList: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -62,8 +58,8 @@ class MainActivity : AppCompatActivity() {
         val currentDateForText = sdfForDateText.format(Date())
         binding.firstDateTextView.text = currentDateForText
 
-        //val tomorrowDate = LocalDate.now().plusDays(1)
-        val tomorrowDate = LocalDate.now().minusDays(1)
+        val tomorrowDate = LocalDate.now().plusDays(1)
+        //val tomorrowDate = LocalDate.now().minusDays(1)
         val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
         loadExchangeList(formattedTomorrowDate)
 
@@ -87,10 +83,13 @@ class MainActivity : AppCompatActivity() {
                             val sdf = SimpleDateFormat("yyyy-M-dd", Locale.ROOT)
                             val currentDate = sdf.format(Date())
 
-                            //val tomorrowDate = LocalDate.now().plusDays(1)
-                            val tomorrowDate = LocalDate.now().minusDays(1)
-                            val formattedTomorrowDate =
-                                tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+                            //val tomorrowDate = LocalDate.now().minusDays(1)
+                            val formattedTomorrowDate = LocalDate.now().plusDays(1)
+                                .format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+
+                            val formattedYesterdayDate = LocalDate.now().minusDays(1)
+                                .format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+
                             if (date == currentDate) {
                                 binding.navHostFragment.visibility = View.VISIBLE
                                 binding.errorMessageTextView.visibility = View.GONE
@@ -114,7 +113,6 @@ class MainActivity : AppCompatActivity() {
                                     val dateText = date.split("-")
                                     val yearText = "${dateText[2]}.${dateText[1]}.${dateText[0].substring(2)}"
 
-                                    //binding.secondDateTextView.text = "${dateText[2]}.${dateText[1]}.${yearText}021"
                                     binding.secondDateTextView.text = yearText
 
                                     for(item in bodyData) {
@@ -136,9 +134,59 @@ class MainActivity : AppCompatActivity() {
                                     }
                                 } else {
                                     //load yesterday
-                                    binding.secondDateTextView.visibility = View.INVISIBLE
-                                    mainViewModel.tomorrowExchangesList.value = listOf()
+
+                                    loadExchangeList(formattedYesterdayDate)
+                                    //binding.secondDateTextView.visibility = View.INVISIBLE
+                                    //mainViewModel.tomorrowExchangesList.value = listOf()
                                 }
+                            } else if (date == formattedYesterdayDate) {
+                                AppServices
+                                    .exchangesService
+                                    .getAllExchanges(formattedTomorrowDate)
+                                    .enqueue(object : Callback<List<Exchange>> {
+                                        override fun onResponse(
+                                            call: Call<List<Exchange>>,
+                                            response: Response<List<Exchange>>
+                                        ) {
+                                            val body = response.body()
+                                            Timber.d("GET_URL: ${call.request().url}")
+                                            if (response.code() == 200) {
+                                                if (body != null) {
+                                                    binding.secondDateTextView.visibility = View.VISIBLE
+
+                                                    val dateText = date.split("-")
+                                                    val yearText = "${dateText[2]}.${dateText[1]}.${dateText[0].substring(2)}"
+
+                                                    binding.secondDateTextView.text = yearText
+
+                                                    for(item in bodyData) {
+                                                        when(item.Cur_Abbreviation) {
+                                                            "EUR" -> item.isShowing = true
+                                                            "USD" -> item.isShowing = true
+                                                            "RUB" -> item.isShowing = true
+                                                        }
+                                                    }
+
+                                                    mainViewModel.tomorrowExchangesList.value = bodyData
+                                                    for (item in mainViewModel.tomorrowExchangesList.value!!) {
+                                                        if (item.Cur_Abbreviation == "USD"
+                                                            || item.Cur_Abbreviation == "EUR"
+                                                            || item.Cur_Abbreviation == "RUB"
+                                                        ) {
+                                                            item.isShowing = true
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<List<Exchange>>,
+                                            t: Throwable
+                                        ) {
+
+                                        }
+                                    })
                             }
                         }
                     }
