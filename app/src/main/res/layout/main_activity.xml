@@ -15,9 +15,8 @@
             android:id="@+id/first_date_textView"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="40dp"
             android:textAlignment="center"
-            android:visibility="invisible"
             />
 
         <com.google.android.material.textview.MaterialTextView
@@ -25,8 +24,7 @@
             android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:textAlignment="center"
-            android:visibility="invisible" />
+            android:textAlignment="center" />
     </LinearLayout>
 
     <androidx.fragment.app.FragmentContainerView

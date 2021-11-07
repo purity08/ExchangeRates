@@ -23,7 +23,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: MainActivityBinding
+    lateinit var binding: MainActivityBinding
     private val mainViewModel: MainViewModel by viewModels()
     lateinit var menuSettingsItem: MenuItem
     lateinit var menuApplyItem: MenuItem
@@ -40,8 +40,12 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        Timber.d("Main_onCreate")
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        binding.firstDateTextView.visibility = View.VISIBLE
+        binding.secondDateTextView.visibility = View.VISIBLE
 
         val sdf = SimpleDateFormat("yyyy-M-dd", Locale.ROOT)
         val currentDate = sdf.format(Date())
@@ -58,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         val formattedTomorrowDateForText =
             tomorrowDate.format(DateTimeFormatter.ofPattern("dd.M.yy"))
         binding.secondDateTextView.text = formattedTomorrowDateForText
-
     }
 
     private fun loadExchangeList(date: String) {
@@ -79,7 +82,8 @@ class MainActivity : AppCompatActivity() {
                             val currentDate = sdf.format(Date())
 
                             val tomorrowDate = LocalDate.now().plusDays(1)
-                            val formattedTomorrowDate = tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
+                            val formattedTomorrowDate =
+                                tomorrowDate.format(DateTimeFormatter.ofPattern("yyyy-M-dd"))
                             if (date == currentDate) {
                                 binding.navHostFragment.visibility = View.VISIBLE
                                 binding.errorMessageTextView.visibility = View.GONE
@@ -89,7 +93,15 @@ class MainActivity : AppCompatActivity() {
                                 menuSettingsItem.isVisible = true
 
                                 mainViewModel.todayExchangesList.value = bodyData
-                            } else if (date == formattedTomorrowDate){
+                                for (item in mainViewModel.todayExchangesList.value!!) {
+                                    if (item.Cur_Abbreviation == "USD"
+                                        || item.Cur_Abbreviation == "EUR"
+                                        || item.Cur_Abbreviation == "RUB"
+                                    ) {
+                                        item.isShowing = true
+                                    }
+                                }
+                            } else if (date == formattedTomorrowDate) {
                                 if (bodyData.isNotEmpty()) {
                                     binding.secondDateTextView.visibility = View.VISIBLE
                                     mainViewModel.tomorrowExchangesList.value = bodyData
@@ -116,6 +128,20 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        Timber.d("Main_onResume")
+        super.onResume()
+    }
+
+    override fun onStart() {
+        Timber.d("Main_onStart")
+        super.onStart()
+    }
+
+    override fun onRestart() {
+        Timber.d("Main_onRestart")
+        super.onRestart()
+    }
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_toolbar, menu)
         menuSettingsItem = menu!!.findItem(R.id.action_settings)
@@ -132,17 +158,11 @@ class MainActivity : AppCompatActivity() {
                 onBackPressed()
             }
             R.id.action_settings -> {
-                binding.firstDateTextView.visibility = View.GONE
-                binding.secondDateTextView.visibility = View.GONE
+                binding.firstDateTextView.visibility = View.INVISIBLE
+                binding.secondDateTextView.visibility = View.INVISIBLE
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        binding.firstDateTextView.visibility = View.VISIBLE
-        binding.secondDateTextView.visibility = View.VISIBLE
     }
 
     fun setActionBarTitle(title: String) {

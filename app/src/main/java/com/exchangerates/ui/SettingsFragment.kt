@@ -28,8 +28,8 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     }
 
     private fun setActionBarTitle() {
-        val activity: MainActivity = activity as MainActivity
-        activity.setActionBarTitle("Настройка валют")
+        mainActivity = activity as MainActivity
+        mainActivity.setActionBarTitle("Настройка валют")
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -48,4 +48,9 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
         }
     }
 
+    override fun onDestroy() {
+        mainActivity.binding.firstDateTextView.visibility = View.VISIBLE
+        mainActivity.binding.secondDateTextView.visibility = View.VISIBLE
+        super.onDestroy()
+    }
 }
