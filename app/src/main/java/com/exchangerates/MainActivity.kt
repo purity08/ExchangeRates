@@ -3,9 +3,7 @@ package com.exchangerates
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.NavHostFragment
 import com.exchangerates.databinding.MainActivityBinding
 import timber.log.Timber
 
@@ -30,15 +28,6 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
-                /*
-                val navHostFragment =
-                    supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-                val navController = navHostFragment.navController
-                if (navHostFragment.childFragmentManager.backStackEntryCount > 0) {
-                    navController.popBackStack()
-                }
-
-                 */
             }
             R.id.action_settings -> {
                 binding.firstDateTextView.visibility = View.GONE
